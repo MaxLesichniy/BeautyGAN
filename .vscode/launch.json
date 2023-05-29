@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Defaut main2.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main2.py",
+            "args": [
+                "--ref", "${workspaceFolder}/imgs/makeup/vFG56.png",
+                "--input", "${workspaceFolder}/imgs/no_makeup/vSYYZ306.png",
+                "--model", "${workspaceFolder}/model",
+                "--output", "${workspaceFolder}/result.jpg"
+            ],
+            "justMyCode": true
+        }
+    ]
+}

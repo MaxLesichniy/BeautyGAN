@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+from tensorflow.python.framework import ops
 import numpy as np
 import os
 import glob
-from imageio import imread, imsave
+from imageio.v2 import imread, imsave
 import cv2
 import argparse
+
+tf.disable_v2_behavior()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--no_makeup', type=str, default=os.path.join('imgs', 'no_makeup', 'xfsy_0068.png'), help='path to the no_makeup image')
@@ -18,6 +21,9 @@ def preprocess(img):
 def deprocess(img):
     return (img + 1) / 2
 
+input_file_name = os.path.basename(args.no_makeup)
+input_file_name = os.path.splitext(input_file_name)[0]
+
 batch_size = 1
 img_size = 256
 no_makeup = cv2.resize(imread(args.no_makeup), (img_size, img_size))
@@ -26,7 +32,8 @@ makeups = glob.glob(os.path.join('imgs', 'makeup', '*.*'))
 result = np.ones((2 * img_size, (len(makeups) + 1) * img_size, 3))
 result[img_size: 2 *  img_size, :img_size] = no_makeup / 255.
 
-tf.reset_default_graph()
+ops.reset_default_graph()
+#tf.reset_default_graph()
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
@@ -46,4 +53,5 @@ for i in range(len(makeups)):
     result[:img_size, (i + 1) * img_size: (i + 2) * img_size] = makeup / 255.
     result[img_size: 2 * img_size, (i + 1) * img_size: (i + 2) * img_size] = Xs_[0]
     
-imsave('result.jpg', result)
+imsave(input_file_name + '_result.jpg', (result * 255).astype(np.uint8))
+# im = Image.fromarray()
